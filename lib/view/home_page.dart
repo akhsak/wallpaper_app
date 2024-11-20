@@ -69,6 +69,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
           // Main content
+
           Expanded(
             child: Consumer<PhotoProvider>(
               builder: (context, provider, child) {
@@ -85,31 +86,50 @@ class _HomeScreenState extends State<HomeScreen> {
                             }
                             return true;
                           },
-                          child: Container(
-                            child: GridView.builder(
-                              gridDelegate:
-                                  SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: 2,
-                                crossAxisSpacing: 7.0,
-                                mainAxisSpacing: 7.0,
-                                childAspectRatio: 0.75,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 8.0),
+                                child: Center(
+                                  child: Text(
+                                    'All Products',
+                                    style: TextStyle(
+                                      fontSize: 18.0,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
                               ),
-                              itemCount: provider.photos.length,
-                              itemBuilder: (context, index) {
-                                final photo = provider.photos[index];
-                                return _buildProductCard(
-                                  context: context,
-                                  photo: photo,
-                                  index: index,
-                                );
-                              },
-                            ),
+                              // Grid view
+                              Expanded(
+                                child: GridView.builder(
+                                  gridDelegate:
+                                      SliverGridDelegateWithFixedCrossAxisCount(
+                                    crossAxisCount: 2,
+                                    crossAxisSpacing: 9.0,
+                                    mainAxisSpacing: .0,
+                                    childAspectRatio: 0.75,
+                                  ),
+                                  itemCount: provider.photos.length,
+                                  itemBuilder: (context, index) {
+                                    final photo = provider.photos[index];
+                                    return _buildProductCard(
+                                      context: context,
+                                      photo: photo,
+                                      index: index,
+                                    );
+                                  },
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       );
               },
             ),
-          ),
+          )
         ],
       ),
     );

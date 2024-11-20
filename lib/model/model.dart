@@ -1,23 +1,3 @@
-// class Photo {
-//   final int id;
-//   final String photographer;
-//   final String imageUrl;
-
-//   Photo({
-//     required this.id,
-//     required this.photographer,
-//     required this.imageUrl,
-//   });
-
-//   // Factory method to create a Photo instance from JSON data
-//   factory Photo.fromJson(Map<String, dynamic> json) {
-//     return Photo(
-//       id: json['id'] as int,
-//       photographer: json['photographer'] as String,
-//       imageUrl: json['src']['medium'] as String, // Use 'medium' size for the grid
-//     );
-//   }
-// }
 class PhotoResponse {
   final int page;
   final int perPage;
@@ -35,7 +15,8 @@ class PhotoResponse {
     return PhotoResponse(
       page: json['page'],
       perPage: json['per_page'],
-      photos: List<Photo>.from(json['photos'].map((photo) => Photo.fromJson(photo))),
+      photos: List<Photo>.from(
+          json['photos'].map((photo) => Photo.fromJson(photo))),
       nextPage: json['next_page'],
     );
   }

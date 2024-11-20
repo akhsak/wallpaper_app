@@ -9,15 +9,17 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  @override
-  void initState() {
-    super.initState();
-    Provider.of<PhotoProvider>(context, listen: false).fetchPhotos();
-  }
+  // Current selected tab index
+  int selectedTabIndex = 2; // "Shop" is the default selected tab
 
   @override
   Widget build(BuildContext context) {
-    final photoProvider = Provider.of<PhotoProvider>(context);
+    final height = MediaQuery.of(context).size.height;
+    final width = MediaQuery.of(context).size.width;
+    final photoProvider = Provider.of<PhotoProvider>(context, listen: false);
+
+    // Fetch photos when the widget is first built
+    photoProvider.fetchPhotos();
 
     return Scaffold(
       appBar: AppBar(
@@ -29,9 +31,11 @@ class _HomeScreenState extends State<HomeScreen> {
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(
-              'All prducts',
-              style: TextStyle(color: Colors.white),
+            SizedBox(width: width * 0.5),
+            CircleAvatar(
+              backgroundImage: NetworkImage(
+                  "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQTSKbCFe_QYSVH-4FpaszXvakr2Eti9eAJpQ&s"),
+              radius: 15,
             ),
             ElevatedButton(
               onPressed: () {},
@@ -58,80 +62,105 @@ class _HomeScreenState extends State<HomeScreen> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                _buildTab('Activity', true),
-                _buildTab('Community', false),
-                _buildTab('Shop', false),
+                _buildTab('Activity', selectedTabIndex == 0, 0),
+                _buildTab('Community', selectedTabIndex == 1, 1),
+                _buildTab('Shop', selectedTabIndex == 2, 2),
               ],
             ),
           ),
           // Main content
           Expanded(
-            child: photoProvider.isLoading && photoProvider.photos.isEmpty
-                ? Center(child: CircularProgressIndicator())
-                : Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                    child: NotificationListener<ScrollNotification>(
-                      onNotification: (scrollInfo) {
-                        if (scrollInfo.metrics.pixels ==
-                                scrollInfo.metrics.maxScrollExtent &&
-                            !photoProvider.isLoading) {
-                          photoProvider.fetchPhotos();
-                        }
-                        return true;
-                      },
-                      child: GridView.builder(
-                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2,
-                          crossAxisSpacing: 7.0,
-                          mainAxisSpacing: 7.0,
-                          childAspectRatio: 0.75,
+            child: Consumer<PhotoProvider>(
+              builder: (context, provider, child) {
+                return provider.isLoading && provider.photos.isEmpty
+                    ? Center(child: CircularProgressIndicator())
+                    : Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                        child: NotificationListener<ScrollNotification>(
+                          onNotification: (scrollInfo) {
+                            if (scrollInfo.metrics.pixels ==
+                                    scrollInfo.metrics.maxScrollExtent &&
+                                !provider.isLoading) {
+                              provider.fetchPhotos();
+                            }
+                            return true;
+                          },
+                          child: Container(
+                            child: GridView.builder(
+                              gridDelegate:
+                                  SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 2,
+                                crossAxisSpacing: 7.0,
+                                mainAxisSpacing: 7.0,
+                                childAspectRatio: 0.75,
+                              ),
+                              itemCount: provider.photos.length,
+                              itemBuilder: (context, index) {
+                                final photo = provider.photos[index];
+                                return _buildProductCard(
+                                  context: context,
+                                  photo: photo,
+                                  index: index,
+                                );
+                              },
+                            ),
+                          ),
                         ),
-                        itemCount: photoProvider.photos.length,
-                        itemBuilder: (context, index) {
-                          final photo = photoProvider.photos[index];
-                          return _buildProductCard(
-                            index: index,
-                            photo: photo,
-                          );
-                        },
-                      ),
-                    ),
-                  ),
+                      );
+              },
+            ),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildTab(String title, bool isSelected) {
-    return Column(
-      children: [
-        ElevatedButton(
-          onPressed: () {},
-          child: Text(
-            title,
-            style: TextStyle(
-              color: isSelected ? Colors.white : Colors.black,
-              fontSize: 16,
-              fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+  Widget _buildTab(String title, bool isSelected, int tabIndex) {
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          selectedTabIndex = tabIndex; // Update selected tab index
+        });
+      },
+      child: Column(
+        children: [
+          ElevatedButton(
+            onPressed: null,
+            style: ElevatedButton.styleFrom(
+              backgroundColor: isSelected ? Colors.white : Colors.white,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
+              ),
+              elevation: 0,
+            ),
+            child: Text(
+              title,
+              style: TextStyle(
+                color: isSelected ? Colors.white : Colors.white,
+                fontSize: 16,
+                fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+              ),
             ),
           ),
-        ),
-        if (isSelected)
-          Container(
-            margin: const EdgeInsets.only(top: 4.0),
-            width: 60,
-            height: 2,
-            color: Colors.white,
-          ),
-      ],
+          if (isSelected)
+            Container(
+              margin: const EdgeInsets.only(top: 4.0),
+              width: 60,
+              height: 2,
+              color: Colors.white,
+            ),
+        ],
+      ),
     );
   }
 
   Widget _buildProductCard({
+    required BuildContext context,
     required dynamic photo,
     required int index,
   }) {
+    final height = MediaQuery.of(context).size.height;
+    final width = MediaQuery.of(context).size.width;
     return Card(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10.0),
@@ -165,14 +194,14 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   child: Image.network(
                     photo.src.large,
-                    height: 260,
+                    height: height * 0.45,
                     width: double.infinity,
                     fit: BoxFit.cover,
                   ),
                 ),
                 Positioned(
-                  top: 8,
-                  left: 8,
+                  top: height * 0.08,
+                  left: width * 0.08,
                   child: Container(
                     padding: const EdgeInsets.symmetric(
                         horizontal: 8.0, vertical: 4.0),
@@ -189,12 +218,18 @@ class _HomeScreenState extends State<HomeScreen> {
               ],
             ),
             Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                photo.photographer,
-                style: TextStyle(fontWeight: FontWeight.w600),
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
+              padding: EdgeInsets.all(8.0),
+              child: Row(
+                children: [
+                  Text(
+                    photo.photographer,
+                    style: TextStyle(fontWeight: FontWeight.w600),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  SizedBox(width: width * 0.22),
+                  Icon(Icons.more_horiz)
+                ],
               ),
             ),
           ],

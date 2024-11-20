@@ -41,6 +41,8 @@ class ImageDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final height = MediaQuery.of(context).size.height;
+    final width = MediaQuery.of(context).size.width;
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
@@ -60,7 +62,7 @@ class ImageDetailScreen extends StatelessWidget {
               child: Image.network(
                 imageUrl,
                 width: double.infinity,
-                height: 300,
+                height: height * 0.45,
                 fit: BoxFit.cover,
                 errorBuilder: (context, error, stackTrace) => const Center(
                   child: Text(
@@ -70,7 +72,7 @@ class ImageDetailScreen extends StatelessWidget {
                 ),
               ),
             ),
-            const SizedBox(height: 16),
+            SizedBox(height: height * 0.05),
             // Details Section
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -85,17 +87,17 @@ class ImageDetailScreen extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       _buildDetailRow('Photographer:', photographer),
-                      const SizedBox(height: 8),
+                      SizedBox(height: height * 0.018),
                       _buildDetailRow(
                         'Photographer URL:',
                         photographerUrl,
                         isLink: true,
                       ),
-                      const SizedBox(height: 8),
+                      SizedBox(height: height * 0.018),
                       _buildDetailRow('Resolution:', '$width x $height'),
-                      const SizedBox(height: 8),
+                      SizedBox(height: height * 0.018),
                       _buildDetailRow('Avg Color:', avgColor),
-                      const SizedBox(height: 8),
+                      SizedBox(height: height * 0.020),
                       _buildDetailRow('Description:',
                           alt.isNotEmpty ? alt : 'No description available'),
                     ],
@@ -103,7 +105,7 @@ class ImageDetailScreen extends StatelessWidget {
                 ),
               ),
             ),
-            const SizedBox(height: 16),
+            SizedBox(height: height * 0.05),
           ],
         ),
       ),
@@ -127,7 +129,7 @@ class ImageDetailScreen extends StatelessWidget {
             fontWeight: FontWeight.bold,
           ),
         ),
-        const SizedBox(width: 8),
+        SizedBox(width: width * 0.018),
         Expanded(
           child: isLink
               ? GestureDetector(

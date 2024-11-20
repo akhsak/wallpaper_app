@@ -7,11 +7,11 @@ class PhotoProvider with ChangeNotifier {
   final List<Photo> _photos = [];
   int _currentPage = 1;
   bool _isLoading = false;
-  int _selectedTabIndex = 0; // Default tab index
+  int _selectedTabIndex = 0; // Use _selectedTabIndex to avoid name conflicts
 
   List<Photo> get photos => _photos;
   bool get isLoading => _isLoading;
-  int get selectedTabIndex => _selectedTabIndex;
+  int get selectedTabIndex => _selectedTabIndex; // Getter for selectedTabIndex
 
   Future<void> fetchPhotos() async {
     if (_isLoading) return; // Prevent duplicate calls
@@ -31,7 +31,7 @@ class PhotoProvider with ChangeNotifier {
   }
 
   void changeTab(int tabIndex) {
-    _selectedTabIndex = tabIndex;
-    notifyListeners();
+    _selectedTabIndex = tabIndex; // Modify the private _selectedTabIndex
+    notifyListeners(); // Notify listeners to update UI
   }
 }

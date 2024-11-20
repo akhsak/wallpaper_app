@@ -1,20 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:wallpaper_app/controller/photo_provider.dart';
-import 'package:wallpaper_app/view/image_screen.dart';
+import 'package:wallpaper_app/view/widgets/build.dart';
 
-class HomeScreen extends StatefulWidget {
-  @override
-  _HomeScreenState createState() => _HomeScreenState();
-}
-
-class _HomeScreenState extends State<HomeScreen> {
-  // Current selected tab index
-  int selectedTabIndex = 2; // "Shop" is the default selected tab
+class HomeScreen extends StatelessWidget {
+  const HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
     final photoProvider = Provider.of<PhotoProvider>(context, listen: false);
 
@@ -23,7 +16,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        leading: Icon(
+        leading: const Icon(
           Icons.arrow_back_ios_new,
           color: Colors.white,
         ),
@@ -32,7 +25,7 @@ class _HomeScreenState extends State<HomeScreen> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             SizedBox(width: width * 0.4),
-            CircleAvatar(
+            const CircleAvatar(
               backgroundImage: NetworkImage(
                   "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQTSKbCFe_QYSVH-4FpaszXvakr2Eti9eAJpQ&s"),
               radius: 15,
@@ -45,7 +38,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   borderRadius: BorderRadius.circular(20),
                 ),
               ),
-              child: Text(
+              child: const Text(
                 'Follow',
                 style: TextStyle(color: Colors.white),
               ),
@@ -62,9 +55,12 @@ class _HomeScreenState extends State<HomeScreen> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                _buildTab('Activity', selectedTabIndex == 0, 0),
-                _buildTab('Community', selectedTabIndex == 1, 1),
-                _buildTab('Shop', selectedTabIndex == 2, 2),
+                _buildTab('Activity', photoProvider.selectedTabIndex == 0, 0,
+                    context),
+                _buildTab('Community', photoProvider.selectedTabIndex == 1, 1,
+                    context),
+                _buildTab(
+                    'Shop', photoProvider.selectedTabIndex == 2, 2, context),
               ],
             ),
           ),
@@ -74,7 +70,7 @@ class _HomeScreenState extends State<HomeScreen> {
             child: Consumer<PhotoProvider>(
               builder: (context, provider, child) {
                 return provider.isLoading && provider.photos.isEmpty
-                    ? Center(child: CircularProgressIndicator())
+                    ? const Center(child: CircularProgressIndicator())
                     : Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 8.0),
                         child: NotificationListener<ScrollNotification>(
@@ -90,9 +86,8 @@ class _HomeScreenState extends State<HomeScreen> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Padding(
-                                  padding:
-                                      const EdgeInsets.symmetric(vertical: 8.0),
+                                const Padding(
+                                  padding: EdgeInsets.symmetric(vertical: 8.0),
                                   child: Center(
                                     child: Text(
                                       'All Products',
@@ -106,13 +101,13 @@ class _HomeScreenState extends State<HomeScreen> {
                                 // Grid view
                                 Expanded(
                                   child: ClipRRect(
-                                    borderRadius: BorderRadius.only(
+                                    borderRadius: const BorderRadius.only(
                                       topLeft: Radius.circular(30.0),
                                       topRight: Radius.circular(30.0),
                                     ),
                                     child: GridView.builder(
                                       gridDelegate:
-                                          SliverGridDelegateWithFixedCrossAxisCount(
+                                          const SliverGridDelegateWithFixedCrossAxisCount(
                                         crossAxisCount: 2,
                                         crossAxisSpacing: 5.0,
                                         mainAxisSpacing: 5.0,
@@ -121,7 +116,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                       itemCount: provider.photos.length,
                                       itemBuilder: (context, index) {
                                         final photo = provider.photos[index];
-                                        return _buildProductCard(
+                                        return buildProductCard(
                                           context: context,
                                           photo: photo,
                                           index: index,
@@ -143,12 +138,12 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildTab(String title, bool isSelected, int tabIndex) {
+  Widget _buildTab(
+      String title, bool isSelected, int tabIndex, BuildContext context) {
     return GestureDetector(
       onTap: () {
-        setState(() {
-          selectedTabIndex = tabIndex; // Update selected tab index
-        });
+        // Call the changeTab method when the tab is tapped
+        Provider.of<PhotoProvider>(context, listen: false).changeTab(tabIndex);
       },
       child: Column(
         children: [
@@ -178,93 +173,6 @@ class _HomeScreenState extends State<HomeScreen> {
               color: Colors.white,
             ),
         ],
-      ),
-    );
-  }
-
-  Widget _buildProductCard({
-    required BuildContext context,
-    required dynamic photo,
-    required int index,
-  }) {
-    final height = MediaQuery.of(context).size.height;
-    final width = MediaQuery.of(context).size.width;
-    return Card(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10.0),
-      ),
-      elevation: 3,
-      child: GestureDetector(
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => ImageDetailScreen(
-                imageUrl: photo.src.large,
-                photographer: photo.photographer,
-                photographerUrl: photo.photographerUrl,
-                width: photo.width,
-                height: photo.height,
-                avgColor: photo.avgColor,
-                alt: photo.alt,
-              ),
-            ),
-          );
-        },
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Stack(
-              children: [
-                ClipRRect(
-                  borderRadius: BorderRadius.vertical(
-                    top: Radius.circular(10),
-                  ),
-                  child: Image.network(
-                    photo.src.large,
-                    height: height * 0.22,
-                    width: double.infinity,
-                    fit: BoxFit.cover,
-                  ),
-                ),
-                Positioned(
-                  top: height * 0.01,
-                  left: width * 0.03,
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 10.0, vertical: 4.0),
-                    decoration: BoxDecoration(
-                      color: Colors.black.withOpacity(0.7),
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
-                    child: Text(
-                      "\$${(index + 1) * 10}",
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            Padding(
-              padding: EdgeInsets.all(8.0),
-              child: Row(
-                children: [
-                  // Wrap Text with Expanded to allow it to take available space
-                  Expanded(
-                    child: Text(
-                      photo.photographer,
-                      style: TextStyle(fontWeight: FontWeight.w600),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-                  // Icon can stay on the right without causing overflow
-                  Icon(Icons.more_horiz)
-                ],
-              ),
-            ),
-          ],
-        ),
       ),
     );
   }

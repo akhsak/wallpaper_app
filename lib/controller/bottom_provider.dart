@@ -8,9 +8,9 @@ class BottomProvider extends ChangeNotifier {
   int currentIndex = 0;
 
   final List<Widget> pages = [
-    HomeScreen(), // Home Screen
-    SearchScreen(), // Favorites Screen
-    NotificationScreen(), // Cart Screen
+    HomeScreen(), 
+    SearchScreen(), 
+    NotificationScreen(), 
     ProfileScreen(),
   ];
 

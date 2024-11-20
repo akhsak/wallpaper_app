@@ -71,63 +71,73 @@ class _HomeScreenState extends State<HomeScreen> {
           // Main content
 
           Expanded(
-            child: Consumer<PhotoProvider>(
-              builder: (context, provider, child) {
-                return provider.isLoading && provider.photos.isEmpty
-                    ? Center(child: CircularProgressIndicator())
-                    : Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                        child: NotificationListener<ScrollNotification>(
-                          onNotification: (scrollInfo) {
-                            if (scrollInfo.metrics.pixels ==
-                                    scrollInfo.metrics.maxScrollExtent &&
-                                !provider.isLoading) {
-                              provider.fetchPhotos();
-                            }
-                            return true;
-                          },
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 8.0),
-                                child: Center(
-                                  child: Text(
-                                    'All Products',
-                                    style: TextStyle(
-                                      fontSize: 18.0,
-                                      fontWeight: FontWeight.bold,
+            child: Expanded(
+              child: Consumer<PhotoProvider>(
+                builder: (context, provider, child) {
+                  return provider.isLoading && provider.photos.isEmpty
+                      ? Center(child: CircularProgressIndicator())
+                      : Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                          child: NotificationListener<ScrollNotification>(
+                            onNotification: (scrollInfo) {
+                              if (scrollInfo.metrics.pixels ==
+                                      scrollInfo.metrics.maxScrollExtent &&
+                                  !provider.isLoading) {
+                                provider.fetchPhotos();
+                              }
+                              return true;
+                            },
+                            child: ClipRRect(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 8.0),
+                                    child: Center(
+                                      child: Text(
+                                        'All Products',
+                                        style: TextStyle(
+                                          fontSize: 18.0,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
                                     ),
                                   ),
-                                ),
-                              ),
-                              // Grid view
-                              Expanded(
-                                child: GridView.builder(
-                                  gridDelegate:
-                                      SliverGridDelegateWithFixedCrossAxisCount(
-                                    crossAxisCount: 2,
-                                    crossAxisSpacing: 9.0,
-                                    mainAxisSpacing: .0,
-                                    childAspectRatio: 0.75,
+                                  // Grid view
+                                  Expanded(
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.only(
+                                        topLeft: Radius.circular(30.0),
+                                        topRight: Radius.circular(30.0),
+                                      ),
+                                      child: GridView.builder(
+                                        gridDelegate:
+                                            SliverGridDelegateWithFixedCrossAxisCount(
+                                          crossAxisCount: 2,
+                                          crossAxisSpacing: 9.0,
+                                          mainAxisSpacing: .0,
+                                          childAspectRatio: 0.75,
+                                        ),
+                                        itemCount: provider.photos.length,
+                                        itemBuilder: (context, index) {
+                                          final photo = provider.photos[index];
+                                          return _buildProductCard(
+                                            context: context,
+                                            photo: photo,
+                                            index: index,
+                                          );
+                                        },
+                                      ),
+                                    ),
                                   ),
-                                  itemCount: provider.photos.length,
-                                  itemBuilder: (context, index) {
-                                    final photo = provider.photos[index];
-                                    return _buildProductCard(
-                                      context: context,
-                                      photo: photo,
-                                      index: index,
-                                    );
-                                  },
-                                ),
+                                ],
                               ),
-                            ],
+                            ),
                           ),
-                        ),
-                      );
-              },
+                        );
+                },
+              ),
             ),
           )
         ],
@@ -241,13 +251,16 @@ class _HomeScreenState extends State<HomeScreen> {
               padding: EdgeInsets.all(8.0),
               child: Row(
                 children: [
-                  Text(
-                    photo.photographer,
-                    style: TextStyle(fontWeight: FontWeight.w600),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
+                  // Wrap Text with Expanded to allow it to take available space
+                  Expanded(
+                    child: Text(
+                      photo.photographer,
+                      style: TextStyle(fontWeight: FontWeight.w600),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
                   ),
-                  SizedBox(width: width * 0.22),
+                  // Icon can stay on the right without causing overflow
                   Icon(Icons.more_horiz)
                 ],
               ),

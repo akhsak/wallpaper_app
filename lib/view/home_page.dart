@@ -31,7 +31,7 @@ class _HomeScreenState extends State<HomeScreen> {
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            SizedBox(width: width * 0.5),
+            SizedBox(width: width * 0.4),
             CircleAvatar(
               backgroundImage: NetworkImage(
                   "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQTSKbCFe_QYSVH-4FpaszXvakr2Eti9eAJpQ&s"),
@@ -71,73 +71,71 @@ class _HomeScreenState extends State<HomeScreen> {
           // Main content
 
           Expanded(
-            child: Expanded(
-              child: Consumer<PhotoProvider>(
-                builder: (context, provider, child) {
-                  return provider.isLoading && provider.photos.isEmpty
-                      ? Center(child: CircularProgressIndicator())
-                      : Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                          child: NotificationListener<ScrollNotification>(
-                            onNotification: (scrollInfo) {
-                              if (scrollInfo.metrics.pixels ==
-                                      scrollInfo.metrics.maxScrollExtent &&
-                                  !provider.isLoading) {
-                                provider.fetchPhotos();
-                              }
-                              return true;
-                            },
-                            child: ClipRRect(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 8.0),
-                                    child: Center(
-                                      child: Text(
-                                        'All Products',
-                                        style: TextStyle(
-                                          fontSize: 18.0,
-                                          fontWeight: FontWeight.bold,
-                                        ),
+            child: Consumer<PhotoProvider>(
+              builder: (context, provider, child) {
+                return provider.isLoading && provider.photos.isEmpty
+                    ? Center(child: CircularProgressIndicator())
+                    : Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                        child: NotificationListener<ScrollNotification>(
+                          onNotification: (scrollInfo) {
+                            if (scrollInfo.metrics.pixels ==
+                                    scrollInfo.metrics.maxScrollExtent &&
+                                !provider.isLoading) {
+                              provider.fetchPhotos();
+                            }
+                            return true;
+                          },
+                          child: ClipRRect(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Padding(
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 8.0),
+                                  child: Center(
+                                    child: Text(
+                                      'All Products',
+                                      style: TextStyle(
+                                        fontSize: 18.0,
+                                        fontWeight: FontWeight.bold,
                                       ),
                                     ),
                                   ),
-                                  // Grid view
-                                  Expanded(
-                                    child: ClipRRect(
-                                      borderRadius: BorderRadius.only(
-                                        topLeft: Radius.circular(30.0),
-                                        topRight: Radius.circular(30.0),
+                                ),
+                                // Grid view
+                                Expanded(
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.only(
+                                      topLeft: Radius.circular(30.0),
+                                      topRight: Radius.circular(30.0),
+                                    ),
+                                    child: GridView.builder(
+                                      gridDelegate:
+                                          SliverGridDelegateWithFixedCrossAxisCount(
+                                        crossAxisCount: 2,
+                                        crossAxisSpacing: 5.0,
+                                        mainAxisSpacing: 5.0,
+                                        childAspectRatio: 0.75,
                                       ),
-                                      child: GridView.builder(
-                                        gridDelegate:
-                                            SliverGridDelegateWithFixedCrossAxisCount(
-                                          crossAxisCount: 2,
-                                          crossAxisSpacing: 9.0,
-                                          mainAxisSpacing: .0,
-                                          childAspectRatio: 0.75,
-                                        ),
-                                        itemCount: provider.photos.length,
-                                        itemBuilder: (context, index) {
-                                          final photo = provider.photos[index];
-                                          return _buildProductCard(
-                                            context: context,
-                                            photo: photo,
-                                            index: index,
-                                          );
-                                        },
-                                      ),
+                                      itemCount: provider.photos.length,
+                                      itemBuilder: (context, index) {
+                                        final photo = provider.photos[index];
+                                        return _buildProductCard(
+                                          context: context,
+                                          photo: photo,
+                                          index: index,
+                                        );
+                                      },
                                     ),
                                   ),
-                                ],
-                              ),
+                                ),
+                              ],
                             ),
                           ),
-                        );
-                },
-              ),
+                        ),
+                      );
+              },
             ),
           )
         ],
@@ -224,17 +222,17 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   child: Image.network(
                     photo.src.large,
-                    height: height * 0.45,
+                    height: height * 0.22,
                     width: double.infinity,
                     fit: BoxFit.cover,
                   ),
                 ),
                 Positioned(
-                  top: height * 0.08,
-                  left: width * 0.08,
+                  top: height * 0.01,
+                  left: width * 0.03,
                   child: Container(
                     padding: const EdgeInsets.symmetric(
-                        horizontal: 8.0, vertical: 4.0),
+                        horizontal: 10.0, vertical: 4.0),
                     decoration: BoxDecoration(
                       color: Colors.black.withOpacity(0.7),
                       borderRadius: BorderRadius.circular(8.0),

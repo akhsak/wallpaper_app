@@ -46,6 +46,15 @@ class ImageDetailScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
+        leading: IconButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          icon: Icon(
+            Icons.arrow_back_ios_new,
+            color: Colors.white,
+          ),
+        ),
         title: Text('Image Details', style: TextStyle(color: Colors.white)),
         backgroundColor: Colors.black,
       ),
@@ -62,7 +71,7 @@ class ImageDetailScreen extends StatelessWidget {
               child: Image.network(
                 imageUrl,
                 width: double.infinity,
-                height: height * 0.45,
+                height: height * 0.40,
                 fit: BoxFit.cover,
                 errorBuilder: (context, error, stackTrace) => const Center(
                   child: Text(
@@ -105,7 +114,7 @@ class ImageDetailScreen extends StatelessWidget {
                 ),
               ),
             ),
-            SizedBox(height: height * 0.05),
+            SizedBox(height: height * 0.08),
           ],
         ),
       ),

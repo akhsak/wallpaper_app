@@ -41,7 +41,10 @@ class _HomeScreenState extends State<HomeScreen> {
                   borderRadius: BorderRadius.circular(20),
                 ),
               ),
-              child: Text('Follow'),
+              child: Text(
+                'Follow',
+                style: TextStyle(color: Colors.white),
+              ),
             ),
           ],
         ),
@@ -103,12 +106,15 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget _buildTab(String title, bool isSelected) {
     return Column(
       children: [
-        Text(
-          title,
-          style: TextStyle(
-            color: isSelected ? Colors.white : Colors.grey,
-            fontSize: 16,
-            fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+        ElevatedButton(
+          onPressed: () {},
+          child: Text(
+            title,
+            style: TextStyle(
+              color: isSelected ? Colors.white : Colors.black,
+              fontSize: 16,
+              fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+            ),
           ),
         ),
         if (isSelected)
@@ -159,7 +165,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   child: Image.network(
                     photo.src.large,
-                    height: 150,
+                    height: 260,
                     width: double.infinity,
                     fit: BoxFit.cover,
                   ),

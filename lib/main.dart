@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:wallpaper_app/controller/photo_provider.dart';
+import 'package:wallpaper_app/view/home_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -7,9 +10,14 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
- @override
+  @override
   Widget build(BuildContext context) {
-    return MaterialApp();
-     
-}
+    return MultiProvider(
+      providers: [ChangeNotifierProvider(create: (context) => PhotoProvider())],
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        home: HomeScreen(),
+      ),
+    );
+  }
 }

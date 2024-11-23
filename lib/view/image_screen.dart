@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:io';
 import 'package:dio/dio.dart';
+import 'package:path_provider/path_provider.dart';
 
 class ImageDetailScreen extends StatelessWidget {
   final String imageUrl;
@@ -23,15 +24,16 @@ class ImageDetailScreen extends StatelessWidget {
 
   Future<void> _downloadImage(BuildContext context) async {
     try {
-      final directory = Directory.systemTemp; // Use temporary storage
-      final filePath = '${directory.path}/image.jpg';
+      final directory = await getApplicationDocumentsDirectory();
+      final filePath = '${directory.path}/downloaded_image.jpg';
       await Dio().download(imageUrl, filePath);
 
-      // Fluttertoast.showToast(
-      //   msg: 'Image downloaded to: $filePath',
-      //   toastLength: Toast.LENGTH_LONG,
-      //   gravity: ToastGravity.BOTTOM,
-      // );
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Image downloaded to: $filePath'),
+          duration: const Duration(seconds: 3),
+        ),
+      );
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Failed to download image: $e')),

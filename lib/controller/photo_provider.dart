@@ -9,12 +9,13 @@ class PhotoProvider with ChangeNotifier {
   bool _isLoading = false;
   int _selectedTabIndex = 0; // Use _selectedTabIndex to avoid name conflicts
 
-  List<Photo> get photos => _photos;
+  List<Photo> get photos => _photos.reversed.toList();
   bool get isLoading => _isLoading;
   int get selectedTabIndex => _selectedTabIndex; // Getter for selectedTabIndex
 
   Future<void> fetchPhotos() async {
-    if (_isLoading) return; // Prevent duplicate calls
+    if (_isLoading) return;
+
     _isLoading = true;
     notifyListeners();
 
